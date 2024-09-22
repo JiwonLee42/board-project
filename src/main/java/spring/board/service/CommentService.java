@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.micrometer.common.util.StringUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +24,13 @@ import java.util.stream.Collectors;
 @Getter
 public class CommentService  {
 
+    @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
     private JPAQueryFactory queryFactory;
 
     @Transactional
@@ -67,11 +72,13 @@ public class CommentService  {
                         .and(comment.status.eq(CommentStatus.ACTIVE)))
                 .orderBy(comment.createdDate.asc())
                 .fetch();
+        // 댓글이 없을 경우 예외 발생
+        if (comments.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 게시글에 댓글이 없습니다.");
+        }
         return comments.stream()
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
     }
-
-
 
 }

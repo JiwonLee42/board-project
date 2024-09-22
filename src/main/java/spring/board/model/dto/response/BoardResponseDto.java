@@ -23,4 +23,10 @@ public class BoardResponseDto {
         this.title = entity.getTitle();
         this.CreatedDate = entity.getCreatedDate();
     }
+
+    public BoardResponseDto(Long id, String title, String content, LocalDateTime createdDate) {
+        this.id = id;
+        this.title = title;
+        this.CreatedDate = createdDate;
+    }
 }

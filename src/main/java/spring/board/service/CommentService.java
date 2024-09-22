@@ -52,7 +52,7 @@ public class CommentService  {
     public CommentResponseDto deleteById(Long id){
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 댓글이 없습니다. "));
         if (comment.getStatus()!= CommentStatus.DELETED)
-            comment.delete(id);
+            comment.delete();
         return new CommentResponseDto(comment);
     }
 

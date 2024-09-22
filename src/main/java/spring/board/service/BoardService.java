@@ -12,10 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 import spring.board.model.dto.request.BoardEditRequestDto;
 import spring.board.model.dto.request.BoardSaveRequestDto;
 import spring.board.model.dto.response.BoardResponseDto;
-import spring.board.model.dto.response.CommentResponseDto;
 import spring.board.model.entity.Board;
 import spring.board.model.entity.BoardStatus;
-import spring.board.model.entity.Comment;
 import spring.board.model.entity.QBoard;
 import spring.board.model.repository.BoardRepository;
 
@@ -52,7 +50,7 @@ public class BoardService {
         return new BoardResponseDto(posts);
     }
 
-    // 조회 . 페이징
+    // 조회, 커서 기반 페이징
     @Transactional(readOnly = true)
     public Slice<BoardResponseDto> findPage(Long lastBoardId, int size) {
         QBoard board = QBoard.board;
@@ -66,7 +64,7 @@ public class BoardService {
                         board.createdDate
                 ))
                 .from(board)
-                .where( board.status.eq(BoardStatus.ACTIVE),
+                .where( board.status.eq(BoardStatus.ACTIVE), // 삭제되지 않은 게시물만 조회하도록 설정
                         lastBoardId != null ? board.id.lt(lastBoardId) : null)  // lastBoardId 이후의 게시글을 가져오기
                 .orderBy(board.createdDate.desc())  // 최신순 정렬
                 .limit(size + 1)  // 요청 크기보다 1개 더 조회 (다음 페이지 여부 확인용)
@@ -78,7 +76,7 @@ public class BoardService {
             results.remove(size);  // 마지막 데이터는 제외 (다음 페이지 존재 여부만 확인)
             hasNext = true;
         }
-
+        // 결과 리스트, 현재 페이지(0), 요청 크기, 다음 페이지 존재 여부 포함한 Slice 객체 반환
         return new SliceImpl<>(results, PageRequest.of(0, size), hasNext);
     }
 
@@ -86,12 +84,15 @@ public class BoardService {
     @Transactional
     public BoardResponseDto deleteById(Long id){
         Board post = boardRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 게시글이 없습니다. "));
-        if (post.getStatus()!=BoardStatus.DELETED)
+        if (post.getStatus()!=BoardStatus.DELETED){
             post.delete(id);
+            // 댓글도 소프트 삭제 처리
+            post.getComments().forEach(comment -> {
+                comment.delete();
+            });
+        }
         return new BoardResponseDto(post);
     }
-
-
 
 
 }

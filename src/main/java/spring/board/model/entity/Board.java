@@ -32,7 +32,7 @@ public class Board extends BaseTimeEntity {
     private BoardStatus status;
 
     // 댓글 리스트
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
@@ -50,7 +50,7 @@ public class Board extends BaseTimeEntity {
     public void delete(Long id){
         this.status = BoardStatus.DELETED;
         for (Comment comment : comments) {
-            comment.delete(comment.getId());
+            comment.delete();
         }
     }
 

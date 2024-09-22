@@ -21,6 +21,8 @@ import spring.board.service.BoardService;
 @NoArgsConstructor
 public class BoardController {
 
+
+    @Autowired
     private BoardService boardService;
 
     @PostMapping("/board/write")

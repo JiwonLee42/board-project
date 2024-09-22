@@ -36,7 +36,7 @@ public class Comment extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void delete(Long id){
+    public void delete(){
         this.status = CommentStatus.DELETED;
     }
 

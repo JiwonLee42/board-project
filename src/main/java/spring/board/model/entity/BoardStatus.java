@@ -1,2 +1,5 @@
-package spring.board.model.entity;public class BoardStatus {
+package spring.board.model.entity;
+
+public enum BoardStatus  {
+    ACTIVE, INACTIVE,DELETED
 }

@@ -1,2 +1,5 @@
-package spring.board.model.entity;public class CommentStatus {
+package spring.board.model.entity;
+
+public enum CommentStatus {
+    ACTIVE, INACTIVE,DELETED
 }

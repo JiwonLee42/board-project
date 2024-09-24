@@ -1,5 +1,5 @@
 # board-project
-게시물 구현 과제 레포지토리입니다.
+K-디지털 트레이닝: 자바 스프링 & 리액트 풀스택 개발자 성장 과정 11회차 게시물 구현 과제 레포지토리입니다.
 ## 데이터베이스 스키마
 <img width="575" alt="image" src="https://github.com/user-attachments/assets/0e468c0b-5a3c-4c4b-bfd2-872a7a8bedfc">
 
